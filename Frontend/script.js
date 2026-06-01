@@ -1,4 +1,4 @@
-async function analyzenews() {
+async function analyzeNews() {
 
     const text = document.getElementById("news").value;
 
@@ -6,85 +6,85 @@ async function analyzenews() {
         alert("Digite uma notícia.");
         return;
     }
-const resultDiv = document.getElementById("result");
+    const resultDiv = document.getElementById("result");
 
-resultDiv.innerHTML = `
-    <div class="loading">
-         🧠 AI analisando notícia...
-     </div>
-`;
+    resultDiv.innerHTML = `
+        <div class="loading">
+            🧠 AI analisando notícia...
+        </div>
+    `;
 
-try {
+    try {
 
-    const response = await fetch(
-        "https://127.0.0.1:5000/predict",
-        {
-            method: "POST",
+        const response = await fetch(
+            "https://127.0.0.1:5000/predict",
+            {
+                method: "POST",
 
-            headers: {
-                "Content-Type": "application/json"
-            },
+                headers: {
+                    "Content-Type": "application/json"
+                },
 
-            body: JSON.stringify({
-                text: text
-            })
-         }
-     );
+                body: JSON.stringify({
+                    text: text
+                })
+            }
+        );
 
-     const data = await response.json();
+        const data = await response.json();
 
-     if(data.error) {
+        if(data.error) {
 
-        resultDiv.innerHTML = `
-            <div class="result-title fake">
-                ❌ Erro
-            </div>
+            resultDiv.innerHTML = `
+                <div class="result-title fake">
+                    ❌ Erro
+                </div>
 
                 <p>${data.error}</p>
-    `;
+            `;
 
-    return;
-}
+            return;
+        }
 
-   const resultClass =
-       data.result.includes("Fake")
-       ? "fake"
-       : "real";
+        const resultClass =
+            data.result.includes("Fake")
+            ? "fake"
+            : "real";
 
-   resultDiv.innerHTML = `
-       <div class="result-title ${resultClass}">
-           ${data.result}
-        </div>
-
-        <div class="stats">
-        
-            <div class="stat-card">
-                <div class="stat-label">
-                    🔴 Fake News
-                </div>
-                
-                <div class=stat-value">
-                    ${data.fake_probability}% 
-                </div> 
+        resultDiv.innerHTML = `
+            <div class="result-title ${resultClass}">
+                ${data.result}
             </div>
-            <div class="stat-card">
-                <div class="stat-label">
-                    🟢 Noticia Real 
-                </div> 
-                
-                <div class="stat-value">
-                    ${data.true_probability}% 
-                </div>
-            </div>
+
+            <div class="stats">
             
-        </div>
+                <div class="stat-card">
+                    <div class="stat-label">
+                        🔴 Fake News
+                    </div>
+                    
+                    <div class=stat-value">
+                        ${data.fake_probability}% 
+                    </div> 
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">
+                        🟢 Noticia Real 
+                    </div> 
+                    
+                    <div class="stat-value">
+                        ${data.true_probability}% 
+                    </div>
+                </div>
+                
+            </div>
 
-        <div class="explanation">
-            📖 ${data.explanation}>
-        </div>
-    `;
+            <div class="explanation">
+                📖 ${data.explanation}>
+            </div>
+        `;
     } catch(error){
-     
+    
         console.error(error);
         
         resultDiv.innerHTML = `
@@ -94,7 +94,7 @@ try {
             
             <p> 
                 Não foi possível se conectar com a API. 
-                </p>
+            </p>
         `;
     }
 }
